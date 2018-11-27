@@ -1,8 +1,3 @@
-{/* <footer class="chatbar">
-  <input class="chatbar-username" placeholder="Your Name (Optional)" />
-  <input class="chatbar-message" placeholder="Type a message and hit ENTER" />
-</footer> */}
-
 import React, { Component } from 'react';
 
 export default class ChatBar extends Component {
@@ -14,7 +9,7 @@ export default class ChatBar extends Component {
     return (
       <footer className="chatbar">
         <input className="chatbar-username" defaultValue={this.props.user}placeholder="Your Name (Optional)" />
-        <input className="chatbar-message" placeholder="Type a message and hit ENTER" />
+        <input className="chatbar-message" onKeyUp={this.props.onSubmit} placeholder="Type a message and hit ENTER" />
       </footer>
     );
   }

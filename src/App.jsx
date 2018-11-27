@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import data from '../static/data.json';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
-// import Message from './Message.jsx';
 
 export default class App extends Component {
   constructor(props) {

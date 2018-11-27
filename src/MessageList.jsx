@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
+import Message from './Message.jsx';
+
 
 function MakeList (props) {
   const arr = props.data.map(i => {
     return (
-      <div className="message" key={i.id}>
-        <span className="message-username"
-        >{i.username}
-        </span>
-        <span className="message-content"
-        >{i.content}</span>
-      </div>
-    );
+      <Message key={i.id} user={i} />
+    )
   });
 
   return (

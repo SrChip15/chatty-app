@@ -41,6 +41,15 @@ export default class App extends Component {
       // Calling setState will trigger a call to render() in App and all child components.
       this.setState({ messages: messages })
     }, 3000);
+
+    // web socket
+    console.log(`Component did mount.`);
+    const webSocket = new WebSocket('ws://localhost:3001');
+    webSocket.onopen = function (event) {
+      // console.log(`Connection to socket is now ${event.type}`);
+      console.log('Connected to server');
+    };
+
   }
 
   render () {

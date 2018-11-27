@@ -11,12 +11,14 @@ export default class App extends Component {
       messages: data.messages,
     }
     this.onSubmit = this.onSubmit.bind(this);
+    this.socket = null;
   }
 
   onSubmit (evt) {
     evt.preventDefault();
+    let messageIn;
     if (evt.key === 'Enter') {
-      let messageIn = {
+      messageIn = {
         id: 4,
         username: data.currentUser.name,
         content: evt.target.value,
@@ -25,6 +27,9 @@ export default class App extends Component {
       const messages = [ ...this.state.messages, messageIn ];
       this.setState({ messages });
       evt.target.value = '';
+
+      //send to socket
+      this.socket.send(`user ${messageIn.username} said ${messageIn.content}`);
     }
   }
 
@@ -43,11 +48,10 @@ export default class App extends Component {
     }, 3000);
 
     // web socket
-    console.log(`Component did mount.`);
     const webSocket = new WebSocket('ws://localhost:3001');
+    this.socket = webSocket;
     webSocket.onopen = function (event) {
-      // console.log(`Connection to socket is now ${event.type}`);
-      console.log('Connected to server');
+      console.log(`Connection to socket is now ${event.type}`);
     };
 
   }

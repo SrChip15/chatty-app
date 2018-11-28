@@ -3,6 +3,18 @@ import data from '../static/data.json';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
 
+function Notification (props) {
+  const mostRecentMessage = props.data[props.data.length -1];
+  if (mostRecentMessage && mostRecentMessage.type === 'incomingNotification') {
+    return (
+      <div className="message system">
+        {props.data.content}
+      </div>
+    )
+  }
+  return false;
+}
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -19,23 +31,27 @@ export default class App extends Component {
     evt.preventDefault();
     if (evt.key === 'Enter') {
       const messageIn = {
+        type: 'postMessage',
         username: this.state.user,
         content: evt.target.value
       }
 
-      // const messages = [ ...this.state.messages, messageIn ];
-      // this.setState({ messages });
       evt.target.value = '';
 
       //send to socket
       this.socket.send(JSON.stringify(messageIn));
-      // evt.target.value = '';
     }
   }
 
   onBlur (evt) {
     evt.preventDefault();
-    this.setState({user: evt.target.value});
+    const newPersonName = evt.target.value;
+    this.setState({ user: newPersonName });
+    const notfnObj = {
+      type: 'postNotification',
+      content: `${this.state.user} has changed their name to ${newPersonName}`
+    }
+    this.socket.send(JSON.stringify(notfnObj));
   }
 
   componentDidMount () {
@@ -50,7 +66,22 @@ export default class App extends Component {
       // code to handle incoming message
       const oldMessages = this.state.messages.slice();
       const upMessages = oldMessages.concat([ parsedAsObj ]);
-      this.setState({ messages: upMessages });
+
+      switch (parsedAsObj.type) {
+        case 'incomingMessage':
+          // handle incoming message
+          this.setState({ messages: upMessages });
+          break;
+        case 'incomingNotification':
+          // handle incoming notification
+          this.setState({messages: upMessages});
+          // alert(parsedAsObj.content);
+          break;
+        default:
+          // show an error in the console if the message type is unknown
+          throw new Error(`Unknown event type ${data.type}`);
+      }
+
     }
   }
 
@@ -58,6 +89,7 @@ export default class App extends Component {
     return (
       <main className="messages">
         <MessageList data={this.state.messages} />
+        <Notification data={this.state.messages} />
         <ChatBar user={this.state.user} onSubmit={this.onSubmit} onBlur={this.onBlur} />
       </main>
     );

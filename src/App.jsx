@@ -4,7 +4,7 @@ import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
 
 function Notification (props) {
-  const mostRecentMessage = props.data[props.data.length -1];
+  const mostRecentMessage = props.data[ props.data.length - 1 ];
   if (mostRecentMessage && mostRecentMessage.type === 'incomingNotification') {
     return (
       <div className="message system">
@@ -21,6 +21,7 @@ export default class App extends Component {
     this.state = {
       user: data.currentUser.name,
       messages: [],
+      users: 0,
     }
     this.onSubmit = this.onSubmit.bind(this);
     this.socket = null;
@@ -62,24 +63,28 @@ export default class App extends Component {
     };
 
     this.socket.onmessage = (event) => {
-      const parsedAsObj = JSON.parse(event.data);
+      const dataFromServer = JSON.parse(event.data);
       // code to handle incoming message
       const oldMessages = this.state.messages.slice();
-      const upMessages = oldMessages.concat([ parsedAsObj ]);
+      const upMessages = oldMessages.concat([ dataFromServer ]);
 
-      switch (parsedAsObj.type) {
-        case 'incomingMessage':
-          // handle incoming message
-          this.setState({ messages: upMessages });
-          break;
-        case 'incomingNotification':
-          // handle incoming notification
-          this.setState({messages: upMessages});
-          // alert(parsedAsObj.content);
-          break;
-        default:
-          // show an error in the console if the message type is unknown
-          throw new Error(`Unknown event type ${data.type}`);
+      if (typeof dataFromServer !== 'number') {
+        switch (dataFromServer.type) {
+          case 'incomingMessage':
+            // handle incoming message
+            this.setState({ messages: upMessages });
+            break;
+          case 'incomingNotification':
+            // handle incoming notification
+            this.setState({ messages: upMessages });
+            // alert(parsedAsObj.content);
+            break;
+          default:
+            // show an error in the console if the message type is unknown
+            throw new Error(`Unknown event type ${data.type}`);
+        }
+      } else {
+        this.setState({users: dataFromServer})
       }
 
     }
@@ -88,6 +93,10 @@ export default class App extends Component {
   render () {
     return (
       <main className="messages">
+        <nav className="navbar">
+          <a href="/" className="navbar-brand" >Chatty</a>
+          <p>{this.state.users} users online</p>
+        </nav>
         <MessageList data={this.state.messages} />
         <Notification data={this.state.messages} />
         <ChatBar user={this.state.user} onSubmit={this.onSubmit} onBlur={this.onBlur} />

@@ -19,10 +19,24 @@ const wss = new SocketServer({ server });
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
   console.log('Client connected');
+  let numberOfClients = 0;
+	wss.clients.forEach(function each(client) {
+		numberOfClients++;
+	})
+	
+	console.log(numberOfClients);
+
+	wss.clients.forEach(function each(client) {
+    if (client.readyState === ws.OPEN) {
+      client.send(numberOfClients);
+ 		}
+	});
+
   
 	ws.on('message', function incoming(data) {
 		const parsed = JSON.parse(data);
   	let broadcastMsg;
+
 		if (parsed.type === 'postNotification') {
 			// notification broadcast
 			parsed.type = 'incomingNotification';
@@ -32,6 +46,7 @@ wss.on('connection', (ws) => {
 			parsed.type = 'incomingMessage';
 			broadcastMsg = Object.assign({id:uuidv1()}, parsed);
 		}
+
   	wss.clients.forEach(function each(client) {
 	    if (client.readyState === ws.OPEN) {
 	    	// console.log(broadcastMsg); // :+1

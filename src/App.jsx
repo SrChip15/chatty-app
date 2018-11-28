@@ -12,6 +12,7 @@ export default class App extends Component {
     }
     this.onSubmit = this.onSubmit.bind(this);
     this.socket = null;
+    this.onBlur = this.onBlur.bind(this);
   }
 
   onSubmit (evt) {
@@ -32,6 +33,11 @@ export default class App extends Component {
     }
   }
 
+  onBlur (evt) {
+    evt.preventDefault();
+    this.setState({user: evt.target.value});
+  }
+
   componentDidMount () {
     // web socket
     this.socket = new WebSocket('ws://localhost:3001');
@@ -43,8 +49,8 @@ export default class App extends Component {
       const parsedAsObj = JSON.parse(event.data);
       // code to handle incoming message
       const oldMessages = this.state.messages.slice();
-      const upMessages = oldMessages.concat([parsedAsObj]);
-      this.setState({messages: upMessages});
+      const upMessages = oldMessages.concat([ parsedAsObj ]);
+      this.setState({ messages: upMessages });
     }
   }
 
@@ -52,7 +58,7 @@ export default class App extends Component {
     return (
       <main className="messages">
         <MessageList data={this.state.messages} />
-        <ChatBar user={this.state.user} onSubmit={this.onSubmit} />
+        <ChatBar user={this.state.user} onSubmit={this.onSubmit} onBlur={this.onBlur} />
       </main>
     );
   }

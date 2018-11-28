@@ -8,7 +8,7 @@ export default class App extends Component {
     super(props);
     this.state = {
       user: data.currentUser.name,
-      messages: data.messages,
+      messages: [],
     }
     this.onSubmit = this.onSubmit.bind(this);
     this.socket = null;
@@ -16,44 +16,36 @@ export default class App extends Component {
 
   onSubmit (evt) {
     evt.preventDefault();
-    let messageIn;
     if (evt.key === 'Enter') {
-      messageIn = {
-        id: 4,
-        username: data.currentUser.name,
-        content: evt.target.value,
+      const messageIn = {
+        username: this.state.user,
+        content: evt.target.value
       }
 
-      const messages = [ ...this.state.messages, messageIn ];
-      this.setState({ messages });
+      // const messages = [ ...this.state.messages, messageIn ];
+      // this.setState({ messages });
       evt.target.value = '';
 
       //send to socket
-      this.socket.send(`user ${messageIn.username} said ${messageIn.content}`);
+      this.socket.send(JSON.stringify(messageIn));
+      // evt.target.value = '';
     }
   }
 
   componentDidMount () {
-    setTimeout(() => {
-      // Add a new message to the list of messages in the data store
-      const newMessage = {
-        id: 3,
-        username: 'Michelle',
-        content: 'Hello there!'
-      };
-      const messages = this.state.messages.concat(newMessage)
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({ messages: messages })
-    }, 3000);
-
     // web socket
-    const webSocket = new WebSocket('ws://localhost:3001');
-    this.socket = webSocket;
-    webSocket.onopen = function (event) {
+    this.socket = new WebSocket('ws://localhost:3001');
+    this.socket.onopen = function (event) {
       console.log(`Connection to socket is now ${event.type}`);
     };
 
+    this.socket.onmessage = (event) => {
+      const parsedAsObj = JSON.parse(event.data);
+      // code to handle incoming message
+      const oldMessages = this.state.messages.slice();
+      const upMessages = oldMessages.concat([parsedAsObj]);
+      this.setState({messages: upMessages});
+    }
   }
 
   render () {

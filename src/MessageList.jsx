@@ -3,9 +3,10 @@ import Message from './Message.jsx';
 
 
 function MakeList (props) {
-  const arr = props.data.map(i => {
+  const arr = props.data.map(message => {
+    console.log(typeof message);
     return (
-      <Message key={i.id} user={i} />
+      <Message key={message.id} message={message} />
     )
   });
 

@@ -4,7 +4,7 @@ import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
 
 function Notification (props) {
-  const mostRecentMessage = props.data[ props.data.length - 1 ];
+  const mostRecentMessage = props.data[props.data.length - 1];
   if (mostRecentMessage && mostRecentMessage.type === 'incomingNotification') {
     return (
       <div className="message system">
@@ -50,7 +50,7 @@ export default class App extends Component {
     this.setState({ user: newPersonName });
     const notfnObj = {
       type: 'postNotification',
-      content: `${this.state.user} has changed their name to ${newPersonName}`
+      content: `${ this.state.user } has changed their name to ${ newPersonName }`
     }
     this.socket.send(JSON.stringify(notfnObj));
   }
@@ -59,34 +59,35 @@ export default class App extends Component {
     // web socket
     this.socket = new WebSocket('ws://localhost:3001');
     this.socket.onopen = function (event) {
-      console.log(`Connection to socket is now ${event.type}`);
+      console.log(`Connection to socket is now ${ event.type }`);
     };
 
     this.socket.onmessage = (event) => {
       const dataFromServer = JSON.parse(event.data);
       // code to handle incoming message
       const oldMessages = this.state.messages.slice();
-      const upMessages = oldMessages.concat([ dataFromServer ]);
+      const upMessages = oldMessages.concat([dataFromServer]);
 
-      if (typeof dataFromServer !== 'number') {
-        switch (dataFromServer.type) {
-          case 'incomingMessage':
-            // handle incoming message
-            this.setState({ messages: upMessages });
-            break;
-          case 'incomingNotification':
-            // handle incoming notification
-            this.setState({ messages: upMessages });
-            // alert(parsedAsObj.content);
-            break;
-          default:
-            // show an error in the console if the message type is unknown
-            throw new Error(`Unknown event type ${data.type}`);
-        }
-      } else {
-        this.setState({users: dataFromServer})
+      switch (dataFromServer.type) {
+        case 'incomingMessage':
+          // handle incoming message
+          this.setState({ messages: upMessages });
+          break;
+        case 'incomingNotification':
+          // handle incoming notification
+          this.setState({ messages: upMessages });
+          break;
+        case 'numberOfClients':
+          this.setState(priorState => {
+            const current = Object.create(priorState);
+            current.users = dataFromServer.clients;
+            return current;
+          });
+          break;
+        default:
+          // show an error in the console if the message type is unknown
+          throw new Error(`Unknown event type ${ data.type }`);
       }
-
     }
   }
 

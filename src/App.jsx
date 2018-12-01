@@ -105,7 +105,7 @@ export default class App extends Component {
             className="navbar-brand"
           >Chatty
           </a>
-          <p>{this.state.users} users online</p>
+          <p>{this.state.users} Users Online</p>
         </nav>
         <MessageList
           data={this.state.messages}

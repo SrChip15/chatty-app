@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700, 700italic");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css");
 
 body {
@@ -70,6 +70,7 @@ body {
   align-items: center;
   background: orange;
   border-bottom: 1px solid black;
+  color: white;
   height: 60px;
   left: 0;
   padding: 0 10px;
@@ -86,5 +87,11 @@ body {
   height: 60px;
   line-height: 60px;
   padding: 0 10px;
+  text-transform: uppercase;
+  font-style: italic;
   text-decoration: none;
+}
+
+.navbar p {
+  font-size: 125%;
 }

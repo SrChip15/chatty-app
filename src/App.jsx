@@ -4,23 +4,22 @@ import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
 
 function Notification (props) {
-  const mostRecentMessage = props.data[props.data.length - 1];
-  if (mostRecentMessage && mostRecentMessage.type === 'incomingNotification') {
-    return (
-      <div className="message system">
-        {props.data.content}
-      </div>
-    )
-  }
-  return false;
+  return (
+    <div className="system">
+      {props.data.content}
+    </div>
+  )
 }
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: data.currentUser.name,
       messages: [],
+      user: {
+        name: 'user',
+        color: null,
+      },
       users: 0,
     }
     this.onSubmit = this.onSubmit.bind(this);
@@ -33,7 +32,7 @@ export default class App extends Component {
     if (evt.key === 'Enter') {
       const messageIn = {
         type: 'postMessage',
-        username: this.state.user,
+        username: this.state.user.name,
         content: evt.target.value
       }
 
@@ -47,11 +46,17 @@ export default class App extends Component {
   onBlur (evt) {
     evt.preventDefault();
     const newPersonName = evt.target.value;
-    this.setState({ user: newPersonName });
+    this.setState({
+      user: {
+        name: newPersonName
+      }
+    });
+
     const notfnObj = {
       type: 'postNotification',
-      content: `${ this.state.user } has changed their name to ${ newPersonName }`
+      content: `${ this.state.user.name } has changed their name to ${ newPersonName }`
     }
+
     this.socket.send(JSON.stringify(notfnObj));
   }
 
@@ -65,8 +70,8 @@ export default class App extends Component {
     this.socket.onmessage = (event) => {
       const dataFromServer = JSON.parse(event.data);
       // code to handle incoming message
-      const oldMessages = this.state.messages.slice();
-      const upMessages = oldMessages.concat([dataFromServer]);
+      const messages = this.state.messages.slice();
+      const upMessages = messages.concat(dataFromServer);
 
       switch (dataFromServer.type) {
         case 'incomingMessage':
@@ -95,12 +100,23 @@ export default class App extends Component {
     return (
       <main className="messages">
         <nav className="navbar">
-          <a href="/" className="navbar-brand" >Chatty</a>
+          <a
+            href="/"
+            className="navbar-brand"
+          >Chatty
+          </a>
           <p>{this.state.users} users online</p>
         </nav>
-        <MessageList data={this.state.messages} />
+        <MessageList
+          data={this.state.messages}
+          user={this.state.user}
+        />
         <Notification data={this.state.messages} />
-        <ChatBar user={this.state.user} onSubmit={this.onSubmit} onBlur={this.onBlur} />
+        <ChatBar
+          user={this.state.user}
+          onSubmit={this.onSubmit}
+          onBlur={this.onBlur}
+        />
       </main>
     );
   }

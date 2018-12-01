@@ -2,6 +2,7 @@ const express = require('express');
 const WebSocket = require('ws');
 const SocketServer = WebSocket.Server;
 const uuidv1 = require('uuid/v1');
+const colors = ["red", "green", "blue", "violet", "pink"];
 
 // Set the port to 3001
 const PORT = 3001;
@@ -29,13 +30,16 @@ function sendToClients(wss, data) {
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
   console.log('Client connected');
+	const randColorSelector = Math.floor(Math.random() * 5);
+  const color = colors[randColorSelector];
 
   // Make data packet with updated connected clients info
-  console.log(`Clients: ${wss.clients.size}`)
   const payload = {
   	type: 'numberOfClients',
-  	clients: wss.clients.size
+  	clients: wss.clients.size,
+  	color: null
   }
+
 	
 	// Inform all clients
 	sendToClients(wss, payload);
@@ -44,25 +48,31 @@ wss.on('connection', (ws) => {
   Handle data received from clients
    */
 	ws.on('message', function incoming(data) {
-		const parsed = JSON.parse(data);
+		const parsedData = JSON.parse(data);
   	let broadcastMsg;
 
-		if (parsed.type === 'postNotification') {
-			// notification broadcast
-			parsed.type = 'incomingNotification';
-			broadcastMsg = parsed;
-		} else {
-			// message broadcast
-			parsed.type = 'incomingMessage';
-			broadcastMsg = Object.assign({id:uuidv1()}, parsed);
-		}
+  	switch (parsedData.type) {
+  		case 'postNotification':
+  			parsedData.type = 'incomingNotification';
+  			break;
+
+			case 'postMessage':
+				parsedData.id = uuidv1();
+				parsedData.type = 'incomingMessage';
+				parsedData.color = color;
+				break;
+
+			default:
+				throw new Error("Unknown event type " + parsedData.type); 
+  	}
 
 		// Send modified payload
-		sendToClients(wss, broadcastMsg);
+		sendToClients(wss, parsedData);
 
 	});
 
-  // Set up a callback for when a client closes the socket. This usually means they closed their browser.
+  // Set up a callback for when a client closes the socket. 
+  // This usually means they closed their browser.
   ws.on('close', () => {
   	console.log('Client disconnected')
 

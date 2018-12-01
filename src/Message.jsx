@@ -6,6 +6,9 @@ export default class Message extends Component {
       color: this.props.message.color,
     }
 
+    const msgImage = this.props.message.image;
+    const htmlImage = msgImage ? <img className="image" src={msgImage} /> : null;
+
     return (
       <div
         className="message"
@@ -17,11 +20,8 @@ export default class Message extends Component {
           {this.props.message.username}
         </span>
 
-        <span
-          className="message-content"
-        >
-          {this.props.message.content}
-        </span>
+        <p className="message-content">{this.props.message.content}</p>
+        {htmlImage}
       </div>
     );
   }

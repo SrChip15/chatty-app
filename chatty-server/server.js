@@ -60,6 +60,15 @@ wss.on('connection', (ws) => {
 				parsedData.id = uuidv1();
 				parsedData.type = 'incomingMessage';
 				parsedData.color = color;
+
+  			const match = /https?:.*\.(png|jpeg|gif|jpg)/.exec(parsedData.content);
+        if (match) {
+          parsedData.content = parsedData.content.replace(match[0], '')
+          parsedData.image = match[0];
+        }
+
+        console.log(match);
+
 				break;
 
 			default:

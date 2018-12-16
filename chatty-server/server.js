@@ -85,12 +85,6 @@ wss.on('connection', (ws) => {
 				parsedData.color = color;
 				parsedData.image = parseImageURL(parsedData.content);
 				parsedData.content = parseChat(parsedData.content);
-
-				// const match = /https?:.*\.(png|jpeg|gif|jpg)/.exec(parsedData.content);
-				// if (match) {
-				// 	parsedData.content = parsedData.content.replace(match[0], '')
-				// 	parsedData.image = match[0];
-				// }
 				break;
 
 			default:

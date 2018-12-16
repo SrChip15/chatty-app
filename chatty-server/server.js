@@ -35,7 +35,7 @@ function sendToClients(wss, data) {
 }
 
 function parseImageURL(messageContent) {
-	const imagePattern = /^.*(.jpg|.png|.gif)$/gi;
+	const imagePattern = /(https?:\/\/.*\.(?:png|jpg|gif))/i;
 	const messageContentArr = messageContent.split(' ');
 
 	const imageURL = messageContentArr.filter(content => imagePattern.test(content));
@@ -43,7 +43,7 @@ function parseImageURL(messageContent) {
 }
 
 function parseChat(messageContent) {
-	const imagePattern = /^.*(.jpg|.png|.gif)$/gi;
+	const imagePattern = /(https?:\/\/.*\.(?:png|jpg|gif))/i;
 	const messageContentArr = messageContent.split(' ');
 
 	const contentArr = messageContentArr.filter(content => !imagePattern.test(content));

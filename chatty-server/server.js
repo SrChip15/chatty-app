@@ -9,9 +9,15 @@ const PORT = 3001;
 
 // Create a new express server
 const server = express()
-	// Make the express server serve static assets (html, javascript, css) from the /public folder
+	// Make the express server serve static assets (html, javascript, css)
+	// from the /public folder
 	.use(express.static('public'))
-	.listen(PORT, '0.0.0.0', 'localhost', () => console.log(`Listening on ${PORT}`));
+	.listen(
+		PORT,
+		'0.0.0.0',
+		'localhost',
+		() => console.log(`Listening on ${PORT}`)
+	);
 
 // Create the WebSockets server
 const wss = new SocketServer({
@@ -26,6 +32,22 @@ function sendToClients(wss, data) {
 			client.send(JSON.stringify(data));
 		}
 	});
+}
+
+function parseImageURL(messageContent) {
+	const imagePattern = /(https?:\/\/.*\.(?:png|jpg|gif))/i;
+	const messageContentArr = messageContent.split(' ');
+
+	const imageURL = messageContentArr.filter(content => imagePattern.test(content));
+	return imageURL.join(' ');
+}
+
+function parseChat(messageContent) {
+	const imagePattern = /(https?:\/\/.*\.(?:png|jpg|gif))/i;
+	const messageContentArr = messageContent.split(' ');
+
+	const contentArr = messageContentArr.filter(content => !imagePattern.test(content));
+	return contentArr.join(' ');
 }
 
 // Set up a callback that will run when a client connects to the server
@@ -61,13 +83,8 @@ wss.on('connection', (ws) => {
 				parsedData.id = uuidv1();
 				parsedData.type = 'incomingMessage';
 				parsedData.color = color;
-
-				const match = /https?:.*\.(png|jpeg|gif|jpg)/.exec(parsedData.content);
-				if (match) {
-					parsedData.content = parsedData.content.replace(match[0], '')
-					parsedData.image = match[0];
-				}
-
+				parsedData.image = parseImageURL(parsedData.content);
+				parsedData.content = parseChat(parsedData.content);
 				break;
 
 			default:

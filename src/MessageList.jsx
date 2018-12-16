@@ -3,10 +3,16 @@ import Message from './Message.jsx';
 
 
 function MakeList (props) {
+  // Prop data element type validation
+  MakeList.propTypes = {
+    data: React.PropTypes.array,
+    user: React.PropTypes.object,
+  }
+
   const arr = props.data.map(message => {
     return (
       <Message
-        key={message.id}
+        key={props.data.id}
         message={message}
         user={props.user}
       />
@@ -19,6 +25,8 @@ function MakeList (props) {
     </div>
   );
 }
+
+
 export default class MessageList extends Component {
   render () {
     return (
@@ -30,7 +38,9 @@ export default class MessageList extends Component {
   }
 }
 
+/** Prop data element type validation */
 MessageList.propTypes = {
   data: React.PropTypes.array,
+  id: React.PropTypes.string,
   user: React.PropTypes.object,
 }

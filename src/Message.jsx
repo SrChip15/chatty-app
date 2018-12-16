@@ -27,28 +27,41 @@ function GetImages(props) {
 
 export default class Message extends Component {
 	render() {
-		const userColor = {
-			color: this.props.message.color,
-		}
+		const messageType = this.props.message.type;
+		let content = null;
+		if (messageType === 'incomingNotification') {
+			content = (
+				<div className="message system">
+					{this.props.message.content}
+				</div>
+			);
+		} else {
+			// Get & use user assigned color
+			const userColor = {
+				color: this.props.message.color,
+			}
 
-		const htmlImage = GetImages(this.props);
+			// Get the stored image if any
+			const htmlImage = GetImages(this.props);
 
-		return (
-			<div className = "message">
-				<span
-					className = "message-username"
-					style = {userColor}
-					>
+			content = (
+				<div className = "message">
+					<span	className = "message-username" style = {userColor}>
 						{this.props.message.username}
 					</span>
 
-				<p
-					className = "message-content"
-					>
+					<p className = "message-content">
 						{this.props.message.content}
-				</p>
-				{htmlImage}
+					</p>
+					{htmlImage}
 				</div>
+			);
+		}
+
+		return (
+			<div>
+				{content}
+			</div>
 		);
 	}
 }

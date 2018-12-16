@@ -3,21 +3,6 @@ import data from '../static/data.json';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
 
-function Notification(props) {
-	// Prop data element type validation
-	Notification.propTypes = {
-		data: React.PropTypes.array
-	}
-
-	return (
-		<div
-			className="message system"
-		>
-			{props.data.content}
-		</div>
-	);
-}
-
 export default class App extends Component {
 	constructor(props) {
 		super(props);
@@ -86,7 +71,6 @@ export default class App extends Component {
 					this.setState({
 						messages: updatedMessages
 					});
-					this.scroll
 					break;
 
 				case 'incomingNotification':
@@ -109,6 +93,10 @@ export default class App extends Component {
 		}
 	}
 
+	scrollToBottom () {
+		this.messagesEnd.scrollIntoView({behavior: 'smooth'});
+	}
+
 	/**
 	Called whenever a component is updated. This callback is used
 	to smoothly navigate the user to the most recent message in the app
@@ -117,15 +105,9 @@ export default class App extends Component {
 		this.scrollToBottom();
 	}
 
-	scrollToBottom () {
-		this.messagesEnd.scrollIntoView({behavior: 'smooth'});
-	}
-
 	render() {
 		return (
-			<main
-				className = "messages"
-			>
+			<div>
 				<nav
 					className = "navbar"
 				>
@@ -139,21 +121,29 @@ export default class App extends Component {
 						{this.state.users} Users Online
 					</p>
 				</nav>
-			<MessageList
-				data = {this.state.messages}
-				user = {this.state.user}
-				scrollToBottom = {this.scrollToBottom}
-			/>
-			<Notification	data = {this.state.messages} />
-			<div
-				ref={(el) => {this.messagesEnd = el}}>
+
+				<main
+					className="messages"
+				>
+					<MessageList
+						data = {this.state.messages}
+						user = {this.state.user}
+						scrollToBottom = {this.scrollToBottom}
+					/>
+
+					<div
+						ref={(el) => {this.messagesEnd = el}}>
+					</div>
+
+				</main >
+				<footer>
+					<ChatBar
+						user = {this.state.user}
+						onSubmit = {this.onSubmit}
+						onBlur = {this.onBlur}
+					/>
+				</footer>
 			</div>
-			<ChatBar
-				user = {this.state.user}
-				onSubmit = {this.onSubmit}
-				onBlur = {this.onBlur}
-			/>
-			</main >
 		);
 	}
 }

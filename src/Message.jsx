@@ -4,7 +4,6 @@ function GetImages(props) {
 	// Prop data element type validation
 	GetImages.propTypes = {
 		message: React.PropTypes.object,
-		user: React.PropTypes.object,
 	}
 
 	// Look for image URL ONLY when the message DOES contain an image URL
@@ -25,42 +24,48 @@ function GetImages(props) {
 	return false;
 }
 
-export default class Message extends Component {
-	render() {
-		const messageType = this.props.message.type;
-		let content = null;
-		if (messageType === 'incomingNotification') {
-			content = (
-				<div className="message system">
-					{this.props.message.content}
-				</div>
-			);
-		} else {
-			// Get & use user assigned color
-			const userColor = {
-				color: this.props.message.color,
-			}
+function ParseIncomingMessage(props) {
+	// Prop data element type validation
+	ParseIncomingMessage.propTypes = {
+		message: React.PropTypes.object,
+	}
 
-			// Get the stored image if any
-			const htmlImage = GetImages(this.props);
-
-			content = (
-				<div className = "message">
-					<span	className = "message-username" style = {userColor}>
-						{this.props.message.username}
-					</span>
-
-					<p className = "message-content">
-						{this.props.message.content}
-					</p>
-					{htmlImage}
-				</div>
-			);
+	const messageType = props.message.type;
+	if (messageType === 'incomingNotification') {
+		return (
+			<div className="message system">
+				{props.message.content}
+			</div>
+		);
+	} else {
+		// Get & use user assigned color
+		const userColor = {
+			color: props.message.color,
 		}
+
+		// Get the stored image if any
+		const htmlImage = GetImages(props);
 
 		return (
 			<div>
-				{content}
+				<span	className = "message-username" style = {userColor}>
+					{props.message.username}
+				</span>
+
+				<p className = "message-content">
+					{props.message.content}
+				</p>
+				{htmlImage}
+			</div>
+		);
+	}
+}
+
+export default class Message extends Component {
+	render() {
+		return (
+			<div>
+				<ParseIncomingMessage message={this.props.message}/>
 			</div>
 		);
 	}
@@ -68,6 +73,5 @@ export default class Message extends Component {
 
 /** Prop data element type validation */
 Message.propTypes = {
-	message: React.PropTypes.object,
-	user: React.PropTypes.object,
+	message: React.PropTypes.array,
 }

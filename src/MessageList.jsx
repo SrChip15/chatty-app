@@ -2,38 +2,25 @@ import React, { Component } from 'react';
 import Message from './Message.jsx';
 
 
-function MakeList (props) {
-  // Prop data element type validation
-  MakeList.propTypes = {
-    data: React.PropTypes.array,
-    user: React.PropTypes.object,
+export default class MessageList extends Component {
+  makeList() {
+    return this.props.data.map(message => {
+      return (
+        <Message
+          key={this.props.data.id}
+          message={message}
+          user={this.props.user}
+        />
+      )
+    });
   }
 
-  const arr = props.data.map(message => {
-    return (
-      <Message
-        key={props.data.id}
-        message={message}
-        user={props.user}
-      />
-    )
-  });
-
-  return (
-    <div>
-      {arr}
-    </div>
-  );
-}
-
-
-export default class MessageList extends Component {
   render () {
+    const arr = this.makeList();
     return (
-      <MakeList
-        data={this.props.data}
-        user={this.props.user}
-      />
+      <div>
+        {arr}
+      </div>
     );
   }
 }

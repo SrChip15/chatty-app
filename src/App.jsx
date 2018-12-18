@@ -46,12 +46,12 @@ export default class App extends Component {
 			}
 		});
 
-		const notfnObj = {
+		const userNameChangeNotificationPayload = {
 			type: 'postNotification',
 			content: `${ this.state.user.name } has changed their name to ${ newPersonName }`
 		}
 
-		this.socket.send(JSON.stringify(notfnObj));
+		this.socket.send(JSON.stringify(userNameChangeNotificationPayload));
 	}
 
 	componentDidMount() {

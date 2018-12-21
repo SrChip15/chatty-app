@@ -33,3 +33,6 @@ npm start
 * "sass-loader": "6.0.0",
 * "sockjs-client": "^1.1.2",
 * "style-loader": "0.13.1",
+
+### Screenshot
+<img src="https://github.com/SrChip15/chatty-app/blob/master/docs/chatty_screenshot.png" >

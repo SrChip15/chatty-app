@@ -41,6 +41,9 @@ body {
 .message {
   display: flex;
   padding: 5px;
+  max-height: 450px;
+  border-radius: 10px;
+  margin: 5px 0;
 }
 
 .message.system {
@@ -57,10 +60,10 @@ body {
 
 .message-content {
   flex: 8;
+  display: block;
 }
 
 .message-username {
-  flex: 2;
   font-weight: 700;
 }
 
@@ -98,5 +101,6 @@ p.navbar-brand {
 
 .image {
   width: auto;
-  max-height: 200px;
+  height: 200px;
+  object-fit: fill;
 }

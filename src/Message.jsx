@@ -1,33 +1,20 @@
 import React, {Component} from 'react';
 
-function GetImages(props) {
-	// Prop data element type validation
-	GetImages.propTypes = {
-		message: React.PropTypes.object,
-	}
-
-	// Look for image URL ONLY when the message DOES contain an image URL
-	if (props.message.image) {
-		const imageURLsAsArr = props.message.image.split(' ');
-
-		const imagesToDisplay = imageURLsAsArr.map((imageURL, idx) => {
-			return <img key={idx} className="image" src={imageURL}	/>
-		})
-
-		return (
-			<div>
-				{imagesToDisplay}
-			</div>
-		);
-	}
-
-	return false;
-}
 
 function ParseIncomingMessage(props) {
 	// Prop data element type validation
 	ParseIncomingMessage.propTypes = {
 		message: React.PropTypes.object,
+	}
+
+	// Look for image URL ONLY when the message DOES contain an image URL
+	let imagesToDisplay = null;
+	if (props.message.image) {
+		const imageURLsAsArr = props.message.image.split(' ');
+
+		imagesToDisplay = imageURLsAsArr.map((imageURL, idx) => {
+			return <img key={idx} className="image" src={imageURL}	/>
+		})
 	}
 
 	const messageType = props.message.type;
@@ -43,19 +30,17 @@ function ParseIncomingMessage(props) {
 			color: props.message.color,
 		}
 
-		// Get the stored image if any
-		const htmlImage = GetImages(props);
-
 		return (
-			<div>
+			<div className="message">
 				<span	className = "message-username" style = {userColor}>
 					{props.message.username}
 				</span>
 
 				<p className = "message-content">
 					{props.message.content}
+					<br></br>
+					{imagesToDisplay}
 				</p>
-				{htmlImage}
 			</div>
 		);
 	}

@@ -111,12 +111,11 @@ export default class App extends Component {
 				<nav
 					className = "navbar"
 				>
-					<a
-						href = "/"
+					<p
 						className = "navbar-brand"
 					>
 						Chatty
-					</a>
+					</p>
 					<p>
 						{this.state.users} Users Online
 					</p>

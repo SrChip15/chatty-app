@@ -79,21 +79,21 @@ body {
   top: 0;
 }
 
-.navbar-brand {
+.navbar p {
+  font-size: 125%;
+}
+
+p.navbar-brand {
   color: inherit;
   display: block;
   font-weight: 700;
-  font-size: 28px;
+  font-size: 40px;
   height: 60px;
   line-height: 60px;
   padding: 0 10px;
   text-transform: uppercase;
   font-style: italic;
   text-decoration: none;
-}
-
-.navbar p {
-  font-size: 125%;
 }
 
 .image {

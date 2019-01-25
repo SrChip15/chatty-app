@@ -19,7 +19,9 @@ npm start
 ### Dependencies
 
 * React
+* WebSocket
 * Webpack
+* Express
 * [babel-loader](https://github.com/babel/babel-loader)
 * [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
 * "babel-core": "6.23.1",
